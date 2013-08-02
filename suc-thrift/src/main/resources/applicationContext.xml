@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="gbk"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-autowire="byName">
+
+    <context:component-scan base-package="com.sohu.suc.thrift"/>
+
+    <context:annotation-config/>
+
+    <bean id="zghTestConnectionPool" class="com.sohu.suc.thrift.pool.internal.ThriftConnectionPool" lazy-init="true">
+        <property name="serverName" value="zghTest"></property>
+        <property name="maxActive" value="100"/>
+        <property name="maxIdle" value="100"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="conTimeOut" value="2000"/>
+    </bean>
+
+    <bean id="zghTestConnectionManager" class="com.sohu.suc.thrift.pool.ThriftConnectionManager" lazy-init="true">
+        <property name="connectionPool" ref="zghTestConnectionPool"></property>
+    </bean>
+
+    <bean id="zghTestClient" class="com.sohu.suc.thrift.client.PersonThriftClientWithPool" lazy-init="true">
+        <property name="thriftConnectionManager" ref="zghTestConnectionManager"></property>
+    </bean>
+    <!-- thrift连接AOP配置  -->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="clientMethods"
+                      expression="execution(* com.sohu.suc.thrift.client.*.*(..))"/>
+        <aop:advisor advice-ref="zghTestConnectionManager" pointcut-ref="clientMethods"/>
+    </aop:config>
+
+
+</beans>
