@@ -55,9 +55,4 @@ Thrift
     客户端调用的时候,从ConnectionManager的threadLocal中获得连接,方法调用之后,如果成功,那么ConnectionManager把连接返
     回给连接池,如果没有执行成功,则丢弃该连接(即不执行返回逻辑),最后从ThreadLocal中去除该连接.
     
-#### 实现代码
-
-    `to be added  ...`
-    
-    
     
