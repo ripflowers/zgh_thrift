@@ -37,7 +37,6 @@ public class ThriftConnectionManager implements MethodInterceptor {
             return o;
         } catch (Exception e) {
             tFramedTransport.close();
-        }
             logger.error("error ThriftConnectionManager.invoke()", e);
             throw new Exception(e);
         } finally {
