@@ -33,12 +33,15 @@ public class ThriftConnectionManager implements MethodInterceptor {
             tFramedTransportThreadSafe.set(tFramedTransport);
             // aop 切入
             Object o = arg0.proceed();
-            connectionPool.returnCon(tFramedTransport);
+           
             return o;
         } catch (Exception e) {
+            tFramedTransport.close();
+        }
             logger.error("error ThriftConnectionManager.invoke()", e);
             throw new Exception(e);
         } finally {
+            connectionPool.returnCon(tFrameTransport);
             tFramedTransportThreadSafe.remove();
         }
 
