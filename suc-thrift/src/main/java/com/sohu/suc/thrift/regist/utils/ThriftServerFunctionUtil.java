@@ -25,7 +25,8 @@ public class ThriftServerFunctionUtil {
         @Override
         public byte[] apply(SucThriftServer input) {
             if (input == null) {
-                return null;
+                // do not return null ,null sucks .
+                return new SucThriftServer();
             }
             TSerializer tSerializer = new TSerializer(new TBinaryProtocol.Factory());
             try {
@@ -33,7 +34,7 @@ public class ThriftServerFunctionUtil {
                 return bytes;
             } catch (TException e) {
                 logger.error("tSerializer thrift server error !!" + e.toString());
-                return null;
+                return new SucThriftServer();
             }
         }
     }
