@@ -52,7 +52,19 @@ public final class ThriftServiceLocator {
                 for (String s : thriftServers.delegate().keySet()) {
                     String registryPath = new StringBuilder().append(path).append("/").append(s).toString();
                     ZkMap<SucThriftServer> _zkMap = ZkMap.createZkMap(zkClient, registryPath, byteArrayToThriftServer);
-                    zkMap.put(s, _zkMap);
+                    // an usefull _zkMap should be add to akMap. some times the zookeeper node has no data 
+                    // we should not add it . 
+                    boolean flag = true;
+                    if (_zkMap != null && _zkMap.size() > 0) {
+                        for (String s___ : _zkMap.delegate().keySet()) {
+                            if (_zkMap.get(s___) == null || Strings.isNullOrEmpty(_zkMap.get(s___).getHost())) {
+                                flag = false;
+                            }
+                        }
+                        if (flag) {
+                        zkMap.put(s, _zkMap);
+                        }
+                    }
                 }
                 logger.info("connected to zk !");
                 return zkMap.get(serverName);
